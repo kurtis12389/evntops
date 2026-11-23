@@ -117,9 +117,9 @@ export default function OrderPage({ id }) {
                   ? 'Scan each label as you pack it. Kit not on the list is added. Works without signal; scans sync when you are back online.'
                   : 'Scan each label as it comes off the van. Works without signal; scans sync when you are back online.'}</p></div>
             </div>
-            {order.status === 'collected' && <p className="notice" style={{ borderColor: 'rgba(255,255,255,.6)' }}>Scanning kit back in will mark this order returned once you press Mark returned below.</p>}
+            {order.status === 'collected' && <p className="notice">Scanning kit back in will mark this order returned once you press Mark returned below.</p>}
             <Scanner onCode={onCode} />
-            {flash && <div className={'scan-flash ' + (flash.ok ? 'ok' : 'bad')} style={{ background: flash.ok ? 'rgba(18,20,19,.35)' : 'rgba(18,20,19,.6)', color: flash.ok ? '#fff' : 'var(--pink)' }} role="status">{flash.text}</div>}
+            {flash && <div className={'scan-flash ' + (flash.ok ? 'ok' : 'bad')} role="status">{flash.text}</div>}
             {bulk && (
               <form className="row" onSubmit={confirmBulk}>
                 <div className="field" style={{ maxWidth: 200 }}><label htmlFor="bulk-qty">How many {bulk.item.name}?</label>
@@ -194,7 +194,7 @@ export default function OrderPage({ id }) {
               <p className="small" style={{ margin: 0 }}>{missing.reduce((n, l) => n + l.picked_qty - l.returned_qty, 0)} item(s) not scanned back. Checking now flags them as missing.</p>
             )}
             {!s.online && <p className="small" style={{ margin: 0 }}>Moving to the next stage needs signal. Your scans are saved.</p>}
-            {err && <p className="error" style={{ color: '#3b0d0d', margin: 0 }}>{err}</p>}
+            {err && <p className="error" style={{ margin: 0 }}>{err}</p>}
             <div className="row">
               <button className="btn solid" disabled={!canMove} onClick={() => move(next.to)}>{next.label}</button>
               {order.status === 'ready' && <button className="btn" disabled={!s.online} onClick={() => move('picking')}>Back to picking</button>}

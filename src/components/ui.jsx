@@ -26,9 +26,9 @@ export function Ring({ words = 'EVNT OPS · KIT CHECK · ' }) {
       <div className="disc" />
       <svg className="text" viewBox="0 0 220 220">
         <defs><path id="ring-path" d="M110,110 m-88,0 a88,88 0 1,1 176,0 a88,88 0 1,1 -176,0" /></defs>
-        <circle cx="110" cy="110" r="104" fill="none" stroke="#f4f6f5" strokeWidth="1" />
-        <circle cx="110" cy="110" r="72" fill="none" stroke="#f4f6f5" strokeWidth="1" />
-        <text fill="#f4f6f5" fontSize="11" fontWeight="600" letterSpacing="2.4"><textPath href="#ring-path" textLength="548" lengthAdjust="spacing">{text}</textPath></text>
+        <circle cx="110" cy="110" r="104" fill="none" stroke="currentColor" strokeWidth="1" />
+        <circle cx="110" cy="110" r="72" fill="none" stroke="currentColor" strokeWidth="1" />
+        <text fill="currentColor" fontSize="11" fontWeight="600" letterSpacing="2.4"><textPath href="#ring-path" textLength="548" lengthAdjust="spacing">{text}</textPath></text>
       </svg>
       <div className="core"><ArrowIcon /></div>
     </div>
@@ -42,7 +42,7 @@ export const Squiggle = ({ style }) => (
 );
 
 export const CurlArrow = () => (
-  <svg width="64" height="70" viewBox="0 0 64 70" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+  <svg className="curl" width="64" height="70" viewBox="0 0 64 70" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
     <path d="M6 8c18-8 34 6 22 18S6 30 14 44s30 14 38 18" /><path d="M42 56l10 6-4 10" />
   </svg>
 );

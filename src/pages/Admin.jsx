@@ -53,7 +53,7 @@ export default function Admin() {
     <>
       <section className="band">
         <div className="wrap">
-          <Hero eyebrow="Admin" title="Every order, every site" lede="All active orders across sites by stage. Overdue orders are marked in pink." />
+          <Hero eyebrow="Admin" title="Every order, every site" lede="All active orders across sites by stage. Overdue dates are highlighted." />
           <div className="table-wrap">
             <table>
               <thead><tr><th>Order</th><th>Site</th><th>Dates</th>{STAGES.slice(0, 4).map((st, i) => <th key={st}>0{i + 1}. {STAGE_LABEL[st]}</th>)}</tr></thead>
@@ -81,7 +81,7 @@ export default function Admin() {
         <div className="wrap">
           <div className="hero"><h2>People</h2>
             <div className="hero-side"><hr className="rule" /><p className="lede small muted" style={{ margin: 0 }}>New sign-ups wait as Not approved. Staff can scan and run orders; viewers can only look.</p></div></div>
-          {pendingPeople.length > 0 && <p className="notice" style={{ borderColor: '#fff' }}>{pendingPeople.length} person waiting for approval.</p>}
+          {pendingPeople.length > 0 && <p className="notice">{pendingPeople.length} person waiting for approval.</p>}
           <div className="list">
             {s.profiles.map((p) => (
               <div className="list-row" key={p.id}>

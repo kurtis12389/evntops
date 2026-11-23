@@ -60,7 +60,7 @@ export default function Login() {
             <div className="field"><label htmlFor="password">Password</label>
               <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8}
                 autoComplete={mode === 'in' ? 'current-password' : 'new-password'} /></div>
-            {err && <p className="error" style={{ margin: 0, color: '#3b0d0d' }}>{err}</p>}
+            {err && <p className="error" style={{ margin: 0 }}>{err}</p>}
             {msg && <p style={{ margin: 0 }}>{msg}</p>}
             <div className="spread">
               <button className="btn solid" disabled={busy} type="submit">{mode === 'in' ? 'Sign in' : 'Create account'}</button>

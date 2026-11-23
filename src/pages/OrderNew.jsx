@@ -94,7 +94,7 @@ export default function OrderNew() {
                   <div style={{ minWidth: 0 }}>
                     <div className="title">{i.name}</div>
                     <div className="meta">{i.label_code} · {i.category} · <span className="tabular">{st.free} of {st.total} free now</span>
-                      {short && <strong style={{ color: 'var(--ink)' }}> · already booked or out, check before promising</strong>}</div>
+                      {short && <strong style={{ color: 'var(--danger)' }}> · already booked or out, check before promising</strong>}</div>
                   </div>
                   <div className="row" style={{ gap: 8 }}>
                     <button type="button" className="btn ghost" style={{ padding: '4px 12px' }} onClick={() => bump(i, -1)} aria-label={`One less ${i.name}`}>−</button>
@@ -106,7 +106,7 @@ export default function OrderNew() {
             })}
             {!items.length && <p className="empty">No kit found. Add kit first from Stock.</p>}
           </div>
-          {err && <p className="error" style={{ color: '#3b0d0d' }}>{err}</p>}
+          {err && <p className="error">{err}</p>}
           <div className="row"><button className="btn solid" disabled={busy || !s.online} type="submit">Create order</button>
             {!s.online && <span className="small">Creating orders needs signal.</span>}</div>
         </div>
