@@ -94,7 +94,7 @@ export default function OrderNew() {
                   <div style={{ minWidth: 0 }}>
                     <div className="title">{i.name}</div>
                     <div className="meta">{i.label_code} · {i.category} · <span className="tabular">{st.free} of {st.total} free now</span>
-                      {short && <strong style={{ color: 'var(--danger)' }}> · already booked or out, check before promising</strong>}</div>
+                      {short && <> <span className="flag">Already booked or out, check before promising</span></>}</div>
                   </div>
                   <div className="row" style={{ gap: 8 }}>
                     <button type="button" className="btn ghost" style={{ padding: '4px 12px' }} onClick={() => bump(i, -1)} aria-label={`One less ${i.name}`}>−</button>

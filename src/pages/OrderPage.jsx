@@ -154,7 +154,7 @@ export default function OrderPage({ id }) {
                       <td className="small hide-sm">{it.shelf || ''}</td>
                       <td className="tabular">{l.qty}</td>
                       <td className="tabular" style={{ color: l.picked_qty >= l.qty ? 'var(--green)' : undefined }}>{l.picked_qty}</td>
-                      <td className="tabular" style={{ color: short ? 'var(--pink)' : undefined }}>{l.returned_qty}</td>
+                      <td className="tabular">{short ? <span className="flag" title="Short">{l.returned_qty}</span> : l.returned_qty}</td>
                       <td className="no-print">
                         {s.isStaff && order.status === 'picking' && !String(l.id).startsWith('pending') && <button className="explore" onClick={() => removeLine(l)}>Remove</button>}
                         {s.isStaff && order.status === 'returned' && <label className="check small"><input type="checkbox" checked={l.damaged} onChange={(e) => updateLine(l, { damaged: e.target.checked })} /> Damaged</label>}

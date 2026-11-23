@@ -65,7 +65,7 @@ export default function Admin() {
                     <tr key={o.id}>
                       <td><a href={`#/order/${o.id}`}>{o.ref} · {o.title}</a></td>
                       <td className="small">{site?.code}</td>
-                      <td className="small" style={{ color: isOverdue(o, s.today) ? 'var(--pink)' : undefined }}>{fmtDate(o.out_date)} to {fmtDate(o.due_date)}</td>
+                      <td className="small">{isOverdue(o, s.today) ? <span className="flag">{fmtDate(o.out_date)} to {fmtDate(o.due_date)}, overdue</span> : <>{fmtDate(o.out_date)} to {fmtDate(o.due_date)}</>}</td>
                       {STAGES.slice(0, 4).map((st, i) => <td key={st} aria-label={i <= idx ? 'done' : ''}>{i < idx ? <span style={{ color: 'var(--green)' }}>●</span> : i === idx ? <span className="pink">●</span> : <span className="muted">○</span>}</td>)}
                     </tr>
                   );

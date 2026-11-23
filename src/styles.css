@@ -190,127 +190,138 @@ td { padding: 10px 10px 10px 0; border-bottom: 1px solid var(--rule); vertical-a
 .footer { border-top: 1px solid var(--rule); padding: 18px max(20px, env(safe-area-inset-right, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
 .footer .wrap { flex-direction: row; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 
-/* Editorial theme (chosen by Kurtis, 23 Nov 2026, from his style reference): white paper, serif headlines,
-   ink pill buttons, soft grey cards and one warm peach accent kept for problems. Overrides the base styles above.
-   Greys are a touch darker than the reference so all text passes WCAG AA. */
+/* Editorial theme from Kurtis's style guide (23 Nov 2026). Overrides the base styles above.
+   Rules followed: serif 400 for 44/64/90px headings with tight tracking; sans body with half-step weights (430/450/480);
+   97% achromatic; peach #fbe1d1 + sienna #5d2a1a only together, peach card at most once per page; pill buttons;
+   24px cards, 16px inputs and small cards, 12px images; no shadows on content cards; links not underlined at rest;
+   4px spacing grid, 80px section gaps, 20px card padding, 8px element gap.
+   Only deviation: greys are a little darker than the guide so every text colour passes WCAG AA. */
 :root:root {
-  --ink: #ffffff; --paper: #17191c; --muted: #61656f; --rule: #e4e4e7;
-  --green: #17191c; --pink: #5d2a1a; --danger: #a8321c; --warn: #5d2a1a;
+  --ink: #ffffff; --paper: #17191c; --muted: #61656f; --rule: #ececec;
+  --green: #17191c; --pink: #17191c; --danger: #5d2a1a; --warn: #5d2a1a;
   --mist: #f2f2f3; --fog: #fafafb; --peach: #fbe1d1; --sienna: #5d2a1a; --edge: #8f939c;
-  --display: 'Source Serif 4', 'Tiempos Headline', Georgia, serif;
+  --display: 'Source Serif 4', 'Tiempos Headline', Georgia, ui-serif, serif;
   --body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   color-scheme: light;
 }
-html body { background: #fff; color: var(--paper); font-size: 17px; line-height: 1.45; }
+html body { background: #fff; color: var(--paper); font-size: 17px; line-height: 1.35; font-weight: 400; }
+html a { text-decoration: none; }
+html a:hover { text-decoration: underline; text-underline-offset: 4px; }
 html :focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
-html .pink { color: var(--sienna); }
+html .pink { color: var(--paper); }
 html .muted { color: var(--muted); }
-html .small, html .meta { font-size: 15px; }
-html .lede, html .lede.small { font-size: 17px; max-width: 48ch; color: var(--muted); }
+html .small, html .meta { font-size: 15px; line-height: 1.5; }
+html .lede, html .lede.small { font-size: 18px; font-weight: 430; letter-spacing: -0.009em; max-width: 48ch; color: var(--muted); line-height: 1.5; }
 html .rule, html .ring, html .squiggle, html .curl { display: none !important; }
+/* Peach + sienna always travel together */
+html .flag { display: inline-block; background: var(--peach); color: var(--sienna); border-radius: 9999px; padding: 2px 10px; font-weight: 450; }
 
-/* Header */
+/* Header: quiet, no fills */
 html .topbar { background: #fff; border-bottom-color: var(--rule); }
 html .topbar-inner { max-width: 1200px; }
-html .brand { font-family: var(--display); font-size: 22px; font-weight: 400; letter-spacing: -0.01em; }
+html .brand { font-family: var(--display); font-size: 22px; font-weight: 400; letter-spacing: -0.009em; }
 html .brand-star { color: var(--paper); font-size: 16px; }
 html .nav { font-size: 16px; font-weight: 400; letter-spacing: 0; text-transform: none; gap: 24px; }
-html .nav a { opacity: 1; border: 0; padding: 10px 0; }
-html .nav a:hover { text-decoration: underline; text-underline-offset: 6px; }
-html .nav a.on { font-weight: 500; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+html .nav a { opacity: 1; border: 0; padding: 10px 0; color: var(--muted); }
+html .nav a.on { color: var(--paper); font-weight: 480; }
 html .status-pill { font-size: 14px; letter-spacing: 0; text-transform: none; color: var(--muted); border-color: var(--rule); }
 html .dot { background: var(--paper); }
 html .dot.off { background: var(--peach); box-shadow: 0 0 0 1px var(--sienna); }
 
-/* Type */
-html h1, html h2 { font-family: var(--display); font-weight: 400; text-transform: none; }
-html h1 { font-size: clamp(38px, 6.5vw, 64px); line-height: 1.1; letter-spacing: -0.02em; }
-html h2 { font-size: clamp(30px, 4.6vw, 44px); line-height: 1.15; letter-spacing: -0.015em; }
-html h3 { font-family: var(--body); font-size: 20px; font-weight: 500; text-transform: none; letter-spacing: -0.01em; }
+/* Type scale: display 90, heading-lg 64, heading 44 (serif 400); subheading 22; body-lg 20; 18; 17 body; 15 caption; 14 meta */
+html h1, html h2 { font-family: var(--display); font-weight: 400; text-transform: none; line-height: 1.3; }
+html h1 { font-size: 64px; letter-spacing: -0.015em; }
+html h1.display { font-size: 90px; letter-spacing: -0.025em; line-height: 1.15; }
+html h2 { font-size: 44px; letter-spacing: -0.015em; }
+html h3 { font-family: var(--body); font-size: 22px; font-weight: 450; line-height: 1.5; text-transform: none; letter-spacing: -0.009em; }
 html .eyebrow, html .eyebrow.pink { font-size: 15px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--muted); }
 html .num { font-size: 14px; font-weight: 400; color: var(--muted); letter-spacing: 0; }
-html .title { font-family: var(--body); font-size: 18px; font-weight: 500; text-transform: none; letter-spacing: -0.01em; }
+html .title { font-family: var(--body); font-size: 18px; font-weight: 480; text-transform: none; letter-spacing: -0.009em; line-height: 1.35; }
+@media (max-width: 900px) { html h1 { font-size: 44px; } html h1.display { font-size: 64px; letter-spacing: -0.015em; } }
+@media (max-width: 480px) { html h1.display { font-size: 44px; } html h2 { font-size: 38px; } }
 
-/* Bands: alternate white and fog instead of green */
-html .band { padding-top: 56px; padding-bottom: 64px; }
+/* Sections: 80px gaps, alternating paper and fog */
+html .band { padding-top: 80px; padding-bottom: 80px; }
 html .band.green { background: var(--fog); color: var(--paper); }
 html .band.green .muted { color: var(--muted); }
 html .band.green .rule, html .band.green .col { border-color: var(--rule); }
 html .wrap { max-width: 1200px; gap: 32px; }
+html .row { gap: 8px; }
+@media (max-width: 640px) { html .band { padding-top: 48px; padding-bottom: 48px; } html .nav { gap: 20px; } }
 
-/* Buttons and links: ink pills, arrow text links */
-html .btn { min-height: 46px; padding: 0 22px; border: 1px solid var(--paper); border-radius: 9999px; background: transparent; color: var(--paper);
-  font-size: 16px; font-weight: 500; letter-spacing: 0; text-transform: none; justify-content: center; }
-html .btn:hover { background: var(--mist); }
+/* Buttons: filled ink pill + ghost ink pill. Links carry an arrow, not an underline */
+html .btn { min-height: 46px; padding: 0 20px; border: 1px solid var(--paper); border-radius: 9999px; background: transparent; color: var(--paper);
+  font-size: 16px; font-weight: 400; letter-spacing: 0; text-transform: none; justify-content: center; }
+html .btn:hover { background: var(--mist); text-decoration: none; }
 html .btn.solid { background: var(--paper); border-color: var(--paper); color: #fff; }
 html .btn.solid:hover { background: #33363c; filter: none; }
-html .btn.ghost { border-color: var(--edge); }
-html .btn.danger { border-color: var(--danger); color: var(--danger); }
+html .btn.ghost { border-color: var(--paper); }
+html .btn.danger { background: var(--peach); border-color: var(--peach); color: var(--sienna); }
 html .explore { min-height: 44px; font-size: 16px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--paper); gap: 8px; }
 html .explore .arrow { display: none; }
 html .explore::after { content: '\2192'; }
 html .explore:hover { text-decoration: underline; text-underline-offset: 4px; }
 
-/* Stat cards: soft grey, peach only when something needs chasing */
-html .stats { gap: 16px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
-html .stat { background: var(--mist); border: 0; border-radius: 24px; padding: 20px 22px; gap: 6px; color: var(--paper); }
-html .stat-pill { border: 0; padding: 0; font-family: var(--display); font-size: 48px; font-weight: 400; line-height: 1.05; letter-spacing: -0.02em; }
-html .stat .small { font-size: 15px; }
+/* Cards: mist, 24px radius, 20px padding, no shadow. The single peach card is the "Need chasing" stat */
+html .stats { gap: 24px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+html .stat { background: var(--mist); border: 0; border-radius: 24px; padding: 20px; gap: 8px; color: var(--paper); }
+html .stat:hover { text-decoration: none; }
+html .stat-pill { border: 0; padding: 0; font-family: var(--display); font-size: 44px; font-weight: 400; line-height: 1.3; letter-spacing: -0.015em; }
 html .stat.alert { background: var(--peach); color: var(--sienna); }
 html .stat.alert .stat-pill, html .stat.alert .muted { color: var(--sienna); }
+html .cols.five { gap: 24px; }
+html .cols.five .col { background: var(--mist); border: 0; border-radius: 24px; padding: 20px; gap: 8px; }
+html .col .count { font-family: var(--display); font-size: 44px; font-weight: 400; line-height: 1.3; letter-spacing: -0.015em; }
 
-/* Stage columns on the home page: white cards on the fog band */
-html .cols.five { gap: 16px; }
-html .cols.five .col { background: #fff; border: 0; border-radius: 24px; padding: 20px; box-shadow: 0 0 0 1px rgba(4, 23, 43, 0.06); }
-html .col .count { font-family: var(--display); font-size: 48px; font-weight: 400; letter-spacing: -0.02em; }
-
-/* Forms */
-html .field label { font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+/* Forms: 16px radius inputs with 16px padding */
+html .field { gap: 8px; }
+html .field label { font-size: 15px; font-weight: 480; letter-spacing: 0; text-transform: none; }
 html input[type=text], html input[type=email], html input[type=password], html input[type=number], html input[type=date], html input[type=search], html select, html textarea,
 html .band.green input, html .band.green select, html .band.green textarea {
   min-height: 48px; background: #fff; border: 1px solid var(--edge); border-radius: 16px; padding: 12px 16px; font-size: 16px; }
 html textarea { min-height: 96px; }
 html input::placeholder, html textarea::placeholder { color: var(--muted); }
 html select option { background: #fff; color: var(--paper); }
-html .error, html .band.green .error { color: var(--danger); }
-html .notice { border: 0; background: var(--mist); border-radius: 16px; padding: 14px 18px; font-size: 16px; }
+html .error, html .band.green .error { display: block; background: var(--peach); color: var(--sienna); border-radius: 16px; padding: 12px 16px; font-size: 16px; }
+html .notice { border: 0; background: var(--mist); border-radius: 16px; padding: 16px 20px; font-size: 16px; }
 html .notice.warn { background: var(--peach); color: var(--sienna); }
 
 /* Lists and tables */
-html .list-row { padding: 18px 0; border-bottom-color: var(--rule); }
+html .list-row { padding: 20px 0; border-bottom-color: var(--rule); }
+html .list-row:hover { text-decoration: none; }
 html .list-row:hover .title, html .band.green .list-row:hover .title { color: var(--paper); text-decoration: underline; text-underline-offset: 4px; }
-html th { font-size: 14px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--muted); border-bottom-color: var(--rule); }
+html th { font-size: 14px; font-weight: 450; letter-spacing: 0; text-transform: none; color: var(--muted); border-bottom-color: var(--rule); }
 html td { border-bottom-color: var(--rule); }
+html td a { font-weight: 450; }
 html table { font-size: 16px; }
 
-/* Status tags: grey for normal, outline for booked/out, peach for problems */
-html .tag { border: 0; border-radius: 9999px; padding: 4px 12px; font-size: 14px; font-weight: 500; letter-spacing: 0; text-transform: none; background: var(--mist); color: var(--paper); }
+/* Status labels: typographic grey for normal, outline for booked/out, peach label for problems */
+html .tag { border: 0; border-radius: 9999px; padding: 4px 12px; font-size: 14px; font-weight: 450; letter-spacing: 0; text-transform: none; background: var(--mist); color: var(--paper); }
 html .tag.available, html .band.green .tag.available { background: var(--mist); color: var(--paper); }
-html .tag.partly, html .tag.booked { background: #fff; box-shadow: inset 0 0 0 1px var(--edge); color: var(--paper); }
-html .tag.out { background: #fff; box-shadow: inset 0 0 0 1px var(--paper); color: var(--paper); }
+html .tag.partly, html .tag.booked { background: transparent; box-shadow: inset 0 0 0 1px var(--edge); color: var(--paper); }
+html .tag.out { background: transparent; box-shadow: inset 0 0 0 1px var(--paper); color: var(--paper); }
 html .tag.repair, html .tag.missing { background: var(--peach); color: var(--sienna); }
 html .tag.retired { background: transparent; color: var(--muted); }
 html .tag.code { background: transparent; padding: 0; color: var(--muted); font-weight: 400; }
 
-/* Stage track on an order */
-html .stages { gap: 6px; }
-html .stage { border: 0; border-radius: 16px; background: var(--mist); padding: 10px 12px; }
-html .stage .name { font-family: var(--body); font-size: 15px; font-weight: 500; text-transform: none; color: var(--muted); }
+/* Stage track on an order: 16px small cards */
+html .stages { gap: 8px; }
+html .stage { border: 0; border-radius: 16px; background: var(--mist); padding: 12px; }
+html .stage .name { font-family: var(--body); font-size: 15px; font-weight: 450; text-transform: none; color: var(--muted); }
 html .stage.done .name { color: var(--paper); }
 html .stage.done .num::after { content: ' \2713'; }
 html .stage.now { border: 0; background: var(--paper); }
 html .stage.now .name, html .stage.now .num { color: #fff; opacity: 1; }
-@media (max-width: 560px) { html .stage { padding: 8px; border-radius: 12px; } html .stage .name { font-size: 12px; } }
+@media (max-width: 560px) { html .stages { gap: 4px; } html .stage { padding: 8px; } html .stage .name { font-size: 12px; } }
 
 /* Chips, scanner, labels, footer */
-html .chip { min-height: 40px; padding: 0 16px; border-color: var(--edge); font-size: 15px; }
+html .chips { gap: 8px; }
+html .chip { min-height: 40px; padding: 0 16px; border-color: var(--paper); font-size: 15px; }
 html .chip[aria-pressed='true'] { background: var(--paper); border-color: var(--paper); color: #fff; }
 html .scanner { border-color: var(--rule); border-radius: 20px; }
-html .scan-flash { border-radius: 16px; font-size: 16px; }
+html .scan-flash { border-radius: 16px; font-size: 16px; padding: 12px 16px; }
 html .scan-flash.ok { background: var(--mist); color: var(--paper); }
 html .scan-flash.bad { background: var(--peach); color: var(--sienna); }
 html .label { border: 1px solid var(--rule); border-radius: 12px; }
 html .photo { border-radius: 12px; }
 html .footer { border-top-color: var(--rule); font-size: 14px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--muted); }
-@media (max-width: 640px) { html .band { padding-top: 40px; padding-bottom: 48px; } html .nav { gap: 20px; } }
-@media print { html .stat, html .cols.five .col { box-shadow: none; } }

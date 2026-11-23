@@ -17,6 +17,7 @@ export default function Home() {
     return o && o.status === 'checked' && l.returned_qty < l.qty && !l.resolved;
   });
   const repair = items.filter((i) => i.status === 'repair');
+  const chaseCount = overdue.length + missingLines.length + repair.length;
   const byStage = Object.fromEntries(STAGES.map((st) => [st, orders.filter((o) => o.status === st)]));
 
   return (
@@ -35,8 +36,7 @@ export default function Home() {
           <div className="stats">
             <a className="stat" href="#/stock"><span className="stat-pill">{freeNow}</span><span className="small muted">Items available now</span></a>
             <a className="stat" href="#/stock?out"><span className="stat-pill">{outNow}</span><span className="small muted">Items out on orders</span></a>
-            <a className={'stat' + (overdue.length ? ' alert' : '')} href="#/orders"><span className="stat-pill">{overdue.length}</span><span className="small muted">Orders overdue</span></a>
-            <a className={'stat' + (missingLines.length ? ' alert' : '')} href="#missing"><span className="stat-pill">{missingLines.length}</span><span className="small muted">Missing after check</span></a>
+            <a className={'stat' + (chaseCount ? ' alert' : '')} href="#missing"><span className="stat-pill">{chaseCount}</span><span className="small muted">{chaseCount ? `Need chasing: ${overdue.length} overdue, ${missingLines.length} missing, ${repair.length} in repair` : 'Nothing to chase'}</span></a>
           </div>
         </div>
       </section>

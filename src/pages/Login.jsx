@@ -40,7 +40,7 @@ export default function Login() {
           <div className="hero" style={{ alignItems: 'center' }}>
             <Ring />
             <div className="field" style={{ gap: 14 }}>
-              <h1>Kit in. Kit out. Nothing missing.</h1>
+              <h1 className="display">Kit in. Kit out. Nothing missing.</h1>
               <div className="hero-side"><hr className="rule" /><p className="lede muted small" style={{ margin: 0 }}>Check Evnt Inspirations kit in and out of the BTR container, by order, from your phone.</p></div>
             </div>
           </div>
