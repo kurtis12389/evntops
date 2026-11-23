@@ -47,17 +47,24 @@ export const CurlArrow = () => (
   </svg>
 );
 
+/** Page header: small label, title, one line of context, then the page's actions. */
 export function Hero({ eyebrow, title, lede, children }) {
   return (
-    <div className="hero">
-      <div className="field" style={{ gap: 10 }}>
-        {eyebrow && <span className="eyebrow pink">{eyebrow}</span>}
-        <h1>{title}</h1>
-      </div>
-      <div className="field" style={{ gap: 14 }}>
-        {lede && <div className="hero-side"><hr className="rule" /><p className="lede muted small" style={{ margin: 0 }}>{lede}</p></div>}
-        {children}
-      </div>
+    <div className="page-head">
+      {eyebrow && <span className="eyebrow">{eyebrow}</span>}
+      <h1>{title}</h1>
+      {lede && <p className="lede">{lede}</p>}
+      {children && <div className="page-actions">{children}</div>}
+    </div>
+  );
+}
+
+/** Section heading with an optional link on the right and a short note under it. */
+export function PanelHead({ title, note, link, linkText }) {
+  return (
+    <div className="panel-head">
+      <div className="spread"><h2>{title}</h2>{link && <Explore href={link}>{linkText}</Explore>}</div>
+      {note && <p className="note">{note}</p>}
     </div>
   );
 }

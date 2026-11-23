@@ -3,7 +3,7 @@ import { useStore, STAGE_LABEL, isOverdue } from '../lib/store.jsx';
 import { supabase, friendlyError } from '../lib/supabase.js';
 import { queueScan, dismissScan } from '../lib/offline.js';
 import Scanner from '../components/Scanner.jsx';
-import { Hero, StageTrack, Explore, fmtDate, fmtDateTime } from '../components/ui.jsx';
+import { Hero, StageTrack, PanelHead, Explore, fmtDate, fmtDateTime } from '../components/ui.jsx';
 
 const NEXT = {
   picking: { to: 'ready', label: 'Mark ready', hint: 'Everything is packed and waiting to be collected.' },
@@ -92,140 +92,128 @@ export default function OrderPage({ id }) {
     (order.status !== 'ready' || collector.trim() || order.collected_by);
 
   return (
-    <>
-      <section className="band">
-        <div className="wrap">
-          <Hero eyebrow={order.ref} title={order.title}
-            lede={`${fmtDate(order.out_date)} to ${fmtDate(order.due_date)}${order.venue ? ` · ${order.venue}` : ''}${order.collected_by ? ` · collected by ${order.collected_by}` : ''}`}>
-            <div className="row">
-              {late && <span className="tag out">Overdue</span>}
-              <button className="btn ghost no-print" onClick={() => window.print()}>Print picking list</button>
-            </div>
-          </Hero>
-          <StageTrack status={order.status} />
-          {order.notes && <p className="muted" style={{ maxWidth: '65ch', margin: 0 }}>{order.notes}</p>}
-        </div>
-      </section>
+    <section className="band">
+      <div className="wrap">
+        <Hero eyebrow={order.ref} title={order.title}
+          lede={`${fmtDate(order.out_date)} to ${fmtDate(order.due_date)}${order.venue ? ` · ${order.venue}` : ''}${order.collected_by ? ` · collected by ${order.collected_by}` : ''}`}>
+          {late && <span className="tag missing">Overdue</span>}
+          <button className="btn ghost no-print" onClick={() => window.print()}>Print picking list</button>
+        </Hero>
+        <StageTrack status={order.status} />
+        {order.notes && <p className="notice" style={{ margin: 0 }}><strong>Notes:</strong> {order.notes}</p>}
 
-      {s.isStaff && mode && (
-        <section className="band green no-print">
-          <div className="wrap">
-            <div className="hero">
-              <h2>{mode === 'pick' ? 'Scan kit out' : 'Scan kit back in'}</h2>
-              <div className="hero-side"><hr className="rule" />
-                <p className="lede small muted" style={{ margin: 0 }}>{mode === 'pick'
-                  ? 'Scan each label as you pack it. Kit not on the list is added. Works without signal; scans sync when you are back online.'
-                  : 'Scan each label as it comes off the van. Works without signal; scans sync when you are back online.'}</p></div>
-            </div>
-            {order.status === 'collected' && <p className="notice">Scanning kit back in will mark this order returned once you press Mark returned below.</p>}
-            <Scanner onCode={onCode} />
-            {flash && <div className={'scan-flash ' + (flash.ok ? 'ok' : 'bad')} role="status">{flash.text}</div>}
-            {bulk && (
-              <form className="row" onSubmit={confirmBulk}>
-                <div className="field" style={{ maxWidth: 200 }}><label htmlFor="bulk-qty">How many {bulk.item.name}?</label>
-                  <input id="bulk-qty" type="number" min="1" value={bulk.qty} onChange={(e) => setBulk({ ...bulk, qty: e.target.value })} autoFocus /></div>
-                <button className="btn solid" type="submit">Confirm</button>
-                <button className="btn ghost" type="button" onClick={() => setBulk(null)}>Cancel</button>
-              </form>
-            )}
-            {failedScans.map((f) => (
-              <div className="notice warn" key={f.client_id}>
-                {f.label}: {friendlyError({ message: f.error })} <button className="explore" onClick={() => dismissScan(f.client_id)}>Dismiss</button>
+        <div className="split">
+          <div className="stack">
+            {s.isStaff && mode && (
+              <div className="panel no-print">
+                <PanelHead title={mode === 'pick' ? 'Scan kit out' : 'Scan kit back in'}
+                  note={mode === 'pick'
+                    ? 'Scan each label as you pack it. Kit not on the list is added. Works without signal; scans sync when you are back online.'
+                    : 'Scan each label as it comes off the van. Works without signal; scans sync when you are back online.'} />
+                {order.status === 'collected' && <p className="notice" style={{ margin: 0 }}>Scanning kit back in will mark this order returned once you press Mark returned.</p>}
+                <Scanner onCode={onCode} />
+                {flash && <div className={'scan-flash ' + (flash.ok ? 'ok' : 'bad')} role="status">{flash.text}</div>}
+                {bulk && (
+                  <form className="row" onSubmit={confirmBulk}>
+                    <div className="field" style={{ maxWidth: 200 }}><label htmlFor="bulk-qty">How many {bulk.item.name}?</label>
+                      <input id="bulk-qty" type="number" min="1" value={bulk.qty} onChange={(e) => setBulk({ ...bulk, qty: e.target.value })} autoFocus /></div>
+                    <button className="btn solid" type="submit">Confirm</button>
+                    <button className="btn ghost" type="button" onClick={() => setBulk(null)}>Cancel</button>
+                  </form>
+                )}
+                {failedScans.map((f) => (
+                  <div className="notice warn" key={f.client_id}>
+                    {f.label}: {friendlyError({ message: f.error })} <button className="explore" onClick={() => dismissScan(f.client_id)}>Dismiss</button>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      <section className="band">
-        <div className="wrap">
-          <div className="spread"><h2>Picking list</h2><span className="small muted tabular">{lines.length} line{lines.length === 1 ? '' : 's'}</span></div>
-          <div className="table-wrap">
-            <table>
-              <thead><tr><th>Item</th><th className="hide-sm">Label</th><th className="hide-sm">Shelf</th><th className="tabular">Need</th><th className="tabular">Out</th><th className="tabular">Back</th><th className="no-print"></th></tr></thead>
-              <tbody>
-                {lines.map((l) => {
-                  const it = s.itemById[l.item_id] || {};
-                  const short = ['returned', 'checked'].includes(order.status) && l.returned_qty < l.picked_qty;
-                  return (
-                    <tr key={l.id}>
-                      <td><a href={`#/item/${it.id}`}>{it.name}</a><span className="show-sm small muted"> {it.label_code}{it.shelf ? ` · ${it.shelf}` : ''}</span>{l.pending ? <span className="small pink"> · {l.pending} waiting to sync</span> : null}{l.damaged ? <span className="tag repair" style={{ marginLeft: 6 }}>Damaged</span> : null}</td>
-                      <td className="small hide-sm">{it.label_code}</td>
-                      <td className="small hide-sm">{it.shelf || ''}</td>
-                      <td className="tabular">{l.qty}</td>
-                      <td className="tabular" style={{ color: l.picked_qty >= l.qty ? 'var(--green)' : undefined }}>{l.picked_qty}</td>
-                      <td className="tabular">{short ? <span className="flag" title="Short">{l.returned_qty}</span> : l.returned_qty}</td>
-                      <td className="no-print">
-                        {s.isStaff && order.status === 'picking' && !String(l.id).startsWith('pending') && <button className="explore" onClick={() => removeLine(l)}>Remove</button>}
-                        {s.isStaff && order.status === 'returned' && <label className="check small"><input type="checkbox" checked={l.damaged} onChange={(e) => updateLine(l, { damaged: e.target.checked })} /> Damaged</label>}
-                        {s.isAdmin && order.status === 'checked' && l.returned_qty < l.qty && !l.resolved && <button className="explore" onClick={() => resolveLine(l)}>Found or written off</button>}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-          {s.isStaff && ['picking', 'ready'].includes(order.status) && (
-            <div className="row no-print">
-              <div className="field" style={{ flex: '1 1 240px' }}><label htmlFor="add-item">Add kit by hand</label>
-                <select id="add-item" value={addId} onChange={(e) => setAddId(e.target.value)}>
-                  <option value="">Choose an item</option>
-                  {s.items.filter((i) => i.site_id === order.site_id && i.status !== 'retired' && !lines.some((l) => l.item_id === i.id))
-                    .map((i) => <option key={i.id} value={i.id}>{i.label_code} · {i.name}</option>)}
-                </select></div>
-              <button className="btn" onClick={addLine} disabled={!addId || !s.online}>Add</button>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {s.isStaff && next && (
-        <section className="band green no-print">
-          <div className="wrap">
-            <h2>Next: {STAGE_LABEL[next.to]}</h2>
-            <p className="lede" style={{ margin: 0 }}>{next.hint}</p>
-            {order.status === 'picking' && !allPicked && <p className="small" style={{ margin: 0 }}>{lines.filter((l) => l.picked_qty < l.qty).length} line(s) still to pick.{s.isAdmin ? ' As admin you can mark it ready anyway.' : ''}</p>}
-            {order.status === 'ready' && (
-              <div className="field" style={{ maxWidth: 360 }}><label htmlFor="collector">Collected by</label>
-                <input id="collector" type="text" value={collector} onChange={(e) => setCollector(e.target.value)} placeholder="Name, and phone if a customer" /></div>
             )}
-            {order.status === 'returned' && missing.length > 0 && (
-              <p className="small" style={{ margin: 0 }}>{missing.reduce((n, l) => n + l.picked_qty - l.returned_qty, 0)} item(s) not scanned back. Checking now flags them as missing.</p>
-            )}
-            {!s.online && <p className="small" style={{ margin: 0 }}>Moving to the next stage needs signal. Your scans are saved.</p>}
-            {err && <p className="error" style={{ margin: 0 }}>{err}</p>}
-            <div className="row">
-              <button className="btn solid" disabled={!canMove} onClick={() => move(next.to)}>{next.label}</button>
-              {order.status === 'ready' && <button className="btn" disabled={!s.online} onClick={() => move('picking')}>Back to picking</button>}
-              {['picking', 'ready'].includes(order.status) && <button className="btn danger" disabled={!s.online} onClick={() => move('cancelled')}>Cancel order</button>}
-            </div>
-          </div>
-        </section>
-      )}
 
-      <section className="band no-print">
-        <div className="wrap">
-          <h2>Activity</h2>
-          <div className="list">
-            {events.map((e) => (
-              <div className="list-row" key={e.id}>
-                <div><div className="title" style={{ fontSize: 15 }}>{e.from_status ? `${STAGE_LABEL[e.from_status]} to ${STAGE_LABEL[e.to_status]}` : 'Order created'}</div>
-                  <div className="meta">{s.nameOf(e.user_id)} · {fmtDateTime(e.at)}</div></div>
+            <div className="panel">
+              <PanelHead title="Picking list" note={`${lines.length} line${lines.length === 1 ? '' : 's'}`} />
+              <div className="table-wrap">
+                <table>
+                  <thead><tr><th>Item</th><th className="hide-sm">Label</th><th className="hide-sm">Shelf</th><th className="tabular">Need</th><th className="tabular">Out</th><th className="tabular">Back</th><th className="no-print"></th></tr></thead>
+                  <tbody>
+                    {lines.map((l) => {
+                      const it = s.itemById[l.item_id] || {};
+                      const short = ['returned', 'checked'].includes(order.status) && l.returned_qty < l.picked_qty;
+                      return (
+                        <tr key={l.id}>
+                          <td><a href={`#/item/${it.id}`}>{it.name}</a><span className="show-sm small muted"><br />{it.label_code}{it.shelf ? ` · ${it.shelf}` : ''}</span>{l.pending ? <span className="small"> · {l.pending} waiting to sync</span> : null}{l.damaged ? <span className="tag repair" style={{ marginLeft: 6 }}>Damaged</span> : null}</td>
+                          <td className="small hide-sm">{it.label_code}</td>
+                          <td className="small hide-sm">{it.shelf || ''}</td>
+                          <td className="tabular">{l.qty}</td>
+                          <td className="tabular">{l.picked_qty >= l.qty ? <strong>{l.picked_qty} ✓</strong> : l.picked_qty}</td>
+                          <td className="tabular">{short ? <span className="flag" title="Short">{l.returned_qty}</span> : l.returned_qty}</td>
+                          <td className="no-print">
+                            {s.isStaff && order.status === 'picking' && !String(l.id).startsWith('pending') && <button className="explore" onClick={() => removeLine(l)}>Remove</button>}
+                            {s.isStaff && order.status === 'returned' && <label className="check small"><input type="checkbox" checked={l.damaged} onChange={(e) => updateLine(l, { damaged: e.target.checked })} /> Damaged</label>}
+                            {s.isAdmin && order.status === 'checked' && l.returned_qty < l.qty && !l.resolved && <button className="explore" onClick={() => resolveLine(l)}>Found or written off</button>}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
-            ))}
-          </div>
-          {s.isAdmin && (
-            <div className="row">
-              <div className="field" style={{ maxWidth: 260 }}><label htmlFor="override">Admin: move to any stage</label>
-                <select id="override" value="" onChange={(e) => e.target.value && move(e.target.value)} disabled={!s.online}>
-                  <option value="">Choose a stage</option>
-                  {['picking', 'ready', 'collected', 'returned', 'checked', 'cancelled'].filter((x) => x !== order.status).map((x) => <option key={x} value={x}>{STAGE_LABEL[x]}</option>)}
-                </select></div>
+              {s.isStaff && ['picking', 'ready'].includes(order.status) && (
+                <div className="row no-print" style={{ alignItems: 'flex-end' }}>
+                  <div className="field" style={{ flex: '1 1 180px' }}><label htmlFor="add-item">Add kit by hand</label>
+                    <select id="add-item" value={addId} onChange={(e) => setAddId(e.target.value)}>
+                      <option value="">Choose an item</option>
+                      {s.items.filter((i) => i.site_id === order.site_id && i.status !== 'retired' && !lines.some((l) => l.item_id === i.id))
+                        .map((i) => <option key={i.id} value={i.id}>{i.label_code} · {i.name}</option>)}
+                    </select></div>
+                  <button className="btn" onClick={addLine} disabled={!addId || !s.online}>Add</button>
+                </div>
+              )}
             </div>
-          )}
+          </div>
+
+          <div className="stack no-print">
+            {s.isStaff && next && (
+              <div className="panel">
+                <PanelHead title={`Next: ${STAGE_LABEL[next.to]}`} note={next.hint} />
+                {order.status === 'picking' && !allPicked && <p className="small" style={{ margin: 0 }}>{lines.filter((l) => l.picked_qty < l.qty).length} line(s) still to pick.{s.isAdmin ? ' As admin you can mark it ready anyway.' : ''}</p>}
+                {order.status === 'ready' && (
+                  <div className="field"><label htmlFor="collector">Collected by</label>
+                    <input id="collector" type="text" value={collector} onChange={(e) => setCollector(e.target.value)} placeholder="Name, and phone if a customer" /></div>
+                )}
+                {order.status === 'returned' && missing.length > 0 && (
+                  <p className="small" style={{ margin: 0 }}>{missing.reduce((n, l) => n + l.picked_qty - l.returned_qty, 0)} item(s) not scanned back. Checking now flags them as missing.</p>
+                )}
+                {!s.online && <p className="small" style={{ margin: 0 }}>Moving to the next stage needs signal. Your scans are saved.</p>}
+                {err && <p className="error" style={{ margin: 0 }}>{err}</p>}
+                <div className="row">
+                  <button className="btn solid" disabled={!canMove} onClick={() => move(next.to)}>{next.label}</button>
+                  {order.status === 'ready' && <button className="btn" disabled={!s.online} onClick={() => move('picking')}>Back to picking</button>}
+                  {['picking', 'ready'].includes(order.status) && <button className="btn danger" disabled={!s.online} onClick={() => move('cancelled')}>Cancel order</button>}
+                </div>
+              </div>
+            )}
+
+            <div className="panel">
+              <PanelHead title="Activity" />
+              <div className="list">
+                {events.map((e) => (
+                  <div className="list-row" key={e.id}>
+                    <div><div className="title">{e.from_status ? `${STAGE_LABEL[e.from_status]} to ${STAGE_LABEL[e.to_status]}` : 'Order created'}</div>
+                      <div className="meta">{s.nameOf(e.user_id)} · {fmtDateTime(e.at)}</div></div>
+                  </div>
+                ))}
+              </div>
+              {s.isAdmin && (
+                <div className="field"><label htmlFor="override">Admin: move to any stage</label>
+                  <select id="override" value="" onChange={(e) => e.target.value && move(e.target.value)} disabled={!s.online}>
+                    <option value="">Choose a stage</option>
+                    {['picking', 'ready', 'collected', 'returned', 'checked', 'cancelled'].filter((x) => x !== order.status).map((x) => <option key={x} value={x}>{STAGE_LABEL[x]}</option>)}
+                  </select></div>
+              )}
+            </div>
+          </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

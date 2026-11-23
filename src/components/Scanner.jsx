@@ -48,7 +48,7 @@ export default function Scanner({ onCode }) {
           : <button className="btn ghost" type="button" onClick={stop}>Stop camera</button>}
       </div>
       {err && <p className="error" style={{ margin: 0 }}>{err}</p>}
-      <form className="row" onSubmit={(e) => { e.preventDefault(); if (typed.trim()) { handle(typed); setTyped(''); } }}>
+      <form className="row" style={{ alignItems: 'flex-end' }} onSubmit={(e) => { e.preventDefault(); if (typed.trim()) { handle(typed); setTyped(''); } }}>
         <div className="field" style={{ flex: '1 1 160px' }}>
           <label htmlFor="typed-code">Or type a label code</label>
           <input id="typed-code" type="text" placeholder="EVN-0001" value={typed} onChange={(e) => setTyped(e.target.value)} autoCapitalize="characters" />

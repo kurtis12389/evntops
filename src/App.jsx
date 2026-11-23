@@ -94,9 +94,8 @@ export default function App() {
       <main>{page}</main>
       <footer className="footer">
         <div className="wrap">
-          <span>© {new Date().getFullYear()} Evnt Inspirations</span>
-          <span>kit.evntops.co.uk</span>
-          <button className="explore" onClick={() => supabase.auth.signOut()}>Sign out</button>
+          <span>© {new Date().getFullYear()} Evnt Inspirations · kit.evntops.co.uk</span>
+          <button className="btn ghost" onClick={() => supabase.auth.signOut()}>Sign out</button>
         </div>
       </footer>
     </>
