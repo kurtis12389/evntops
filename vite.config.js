@@ -12,7 +12,7 @@ export default defineConfig({
         name: 'EVNT OPS Kit',
         short_name: 'EVNT Kit',
         description: 'Check Evnt Inspirations kit in and out',
-        theme_color: '#6a4cff',
+        theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
         start_url: '/',

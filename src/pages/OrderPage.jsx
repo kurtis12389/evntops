@@ -129,7 +129,7 @@ export default function OrderPage({ id }) {
               </form>
             )}
             {failedScans.map((f) => (
-              <div className="notice" key={f.client_id} style={{ borderColor: 'var(--pink)' }}>
+              <div className="notice warn" key={f.client_id}>
                 {f.label}: {friendlyError({ message: f.error })} <button className="explore" onClick={() => dismissScan(f.client_id)}>Dismiss</button>
               </div>
             ))}

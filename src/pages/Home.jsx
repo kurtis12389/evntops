@@ -78,7 +78,7 @@ export default function Home() {
             {overdue.map((o) => (
               <a className="list-row" key={o.id} href={`#/order/${o.id}`}>
                 <div><div className="title">{o.ref} · {o.title}</div><div className="meta">Due back {fmtDate(o.due_date)} · collected by {o.collected_by || 'not recorded'}</div></div>
-                <span className="tag out">Overdue</span>
+                <span className="tag missing">Overdue</span>
               </a>
             ))}
             {missingLines.map((l) => {
