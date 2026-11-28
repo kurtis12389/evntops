@@ -1,0 +1,71 @@
+import { useState } from 'react';
+import { supabase, friendlyError } from '../lib/supabase.js';
+
+export default function Login() {
+  const [mode, setMode] = useState('in');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [msg, setMsg] = useState('');
+  const [err, setErr] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setErr(''); setMsg(''); setBusy(true);
+    try {
+      if (mode === 'in') {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+      } else {
+        const { data, error } = await supabase.auth.signUp({
+          email, password, options: { data: { full_name: name }, emailRedirectTo: location.origin }
+        });
+        if (error) throw error;
+        if (!data.session) setMsg('Check your email and tap the link to confirm, then sign in.');
+      }
+    } catch (e2) {
+      setErr(friendlyError(e2));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <>
+      <header className="topbar"><div className="topbar-inner"><span className="brand"><span className="brand-star">✦</span> EVNT OPS</span></div></header>
+      <section className="band">
+        <div className="wrap">
+          <div className="split login">
+            <div className="page-head">
+              <h1 className="display">Kit in. Kit out. Nothing missing.</h1>
+              <p className="lede">Check Evnt Inspirations kit in and out of the BTR container, by order, from your phone.</p>
+            </div>
+            <div className="panel">
+              <h2>{mode === 'in' ? 'Sign in' : 'Create your account'}</h2>
+              <form className="field" style={{ gap: 16 }} onSubmit={submit}>
+                {mode === 'up' && (
+                  <div className="field"><label htmlFor="name">Your name</label>
+                    <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required autoComplete="name" /></div>
+                )}
+                <div className="field"><label htmlFor="email">Email</label>
+                  <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" /></div>
+                <div className="field"><label htmlFor="password">Password</label>
+                  <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8}
+                    autoComplete={mode === 'in' ? 'current-password' : 'new-password'} /></div>
+                {err && <p className="error" style={{ margin: 0 }}>{err}</p>}
+                {msg && <p style={{ margin: 0 }}>{msg}</p>}
+                <div className="spread">
+                  <button className="btn solid" disabled={busy} type="submit">{mode === 'in' ? 'Sign in' : 'Create account'}</button>
+                  <button className="explore" type="button" onClick={() => { setMode(mode === 'in' ? 'up' : 'in'); setErr(''); setMsg(''); }}>
+                    {mode === 'in' ? 'New here? Create an account' : 'Have an account? Sign in'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
